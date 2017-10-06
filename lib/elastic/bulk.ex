@@ -49,6 +49,17 @@ defmodule Elastic.Bulk do
     |> call_bulk_api
   end
 
+  @doc """
+    Makes bulk index requests to ElasticSearch.
+
+    For more information see documentation on `Elastic.Bulk`.
+  """
+  def index(documents) do
+    documents
+    |> Enum.map(&index_document/1)
+    |> call_bulk_api
+  end
+
   defp create_document({index, type, id, document}) do
     [
       Poison.encode!(%{create: identifier(index, type, id)}),
@@ -60,6 +71,13 @@ defmodule Elastic.Bulk do
     [
       Poison.encode!(%{update: identifier(index, type, id)}),
       Poison.encode!(%{doc: document})
+    ] |> Enum.join("\n")
+  end
+
+  defp index_document({index, type, id, document}) do
+    [
+      Poison.encode!(%{index: identifier(index, type, id)}),
+      Poison.encode!(document)
     ] |> Enum.join("\n")
   end
 
