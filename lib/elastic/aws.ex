@@ -1,7 +1,8 @@
 defmodule Elastic.AWS do
-
+  require Logger
   @moduledoc false
   def enabled? do
+    Logger.info("Elastic settings: #{Kernel.inspect(settings())}")
     settings()[:enabled]
   end
 
@@ -20,6 +21,7 @@ defmodule Elastic.AWS do
   end
 
   def sign_authorization_headers(method, url, headers, body) do
+    Logger.info("Elastic settings: #{Kernel.inspect(settings())}")
     uri = URI.parse(url)
     request_time = DateTime.utc_now |> DateTime.to_naive
     time_header = request_time |> AWSAuth.Utils.format_time
@@ -28,7 +30,7 @@ defmodule Elastic.AWS do
     headers = headers |> Keyword.put(:"X-Amz-Date", time_header)
     |> Keyword.put(:host, uri.host)
     |> Keyword.put(:"x-amz-content-sha256", content_header)
-
+    Logger.info("Headers before signing: #{Kernel.inspect(headers)}")
     signed_header = AWSAuth.sign_authorization_header(
       settings.access_key_id,
       settings.secret_access_key,

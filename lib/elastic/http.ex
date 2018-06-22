@@ -1,4 +1,5 @@
 defmodule Elastic.HTTP do
+  require Logger
   alias Elastic.AWS
   @moduledoc ~S"""
   Used to make raw calls to Elastic Search.
@@ -102,7 +103,7 @@ defmodule Elastic.HTTP do
     url = URI.merge(base_url(), url)
 
     headers = build_auth_header(method, url, headers, body)
-
+    Logger.info("Headers after build_auth_header: #{Kernel.inspect(headers)}")
     options = options
     |> Keyword.put(:headers, headers)
     |> Keyword.put(:body, body)
@@ -125,8 +126,10 @@ defmodule Elastic.HTTP do
   end
 
   defp build_auth_header(method, url, headers, body) do
-    if AWS.enabled?,
-      do: AWS.sign_authorization_headers(method, url, headers, body),
-      else: headers
+    Logger.info("Removed check for AWS.enabled? Signing all authorization headers")
+    AWS.sign_authorization_headers(method, url, headers, body)
+    # if AWS.enabled?,
+    #   do: AWS.sign_authorization_headers(method, url, headers, body),
+    #   else: headers
   end
 end
