@@ -127,6 +127,7 @@ defmodule Elastic.HTTP do
 
   defp build_auth_header(method, url, headers, body) do
     Logger.info("Removed check for AWS.enabled? Signing all authorization headers")
+    Logger.info("Is AWS actually enabled? #{Logger.info(Kernel.inspect(AWS.enabled?))}")
     AWS.sign_authorization_headers(method, url, headers, body)
     # if AWS.enabled?,
     #   do: AWS.sign_authorization_headers(method, url, headers, body),
