@@ -81,14 +81,10 @@ defmodule Elastic.HTTP do
   end
 
   def bulk(options) do
-    headers = Keyword.get(options, :headers, [])
     body = Keyword.get(options, :body, "") <> "\n"
-    url = URI.merge(base_url(), "_bulk")
-    headers = build_auth_header(:post, url, headers, body)
-    options = options
-    |> Keyword.put(:body, body)
-    |> Keyword.put(:headers, headers)
-
+    options = Keyword.put(options, :body, body) |> add_content_type_header
+    headers = options[:headers]
+    url = build_url(:post, "_bulk", headers, body)
     HTTPotion.post(url, options) |> process_response
   end
 
@@ -107,8 +103,18 @@ defmodule Elastic.HTTP do
     |> Keyword.put(:headers, headers)
     |> Keyword.put(:body, body)
     |> Keyword.put(:timeout, 30_000)
+    |> add_content_type_header
 
+    headers = options[:headers]
+
+    url = build_url(method, url, headers, body)
     apply(HTTPotion, method, [url, options]) |> process_response
+  end
+
+  defp add_content_type_header(options) do
+    headers = Keyword.get(options, :headers, Keyword.new)
+    headers = Keyword.put(headers, :"Content-Type", "application/json")
+    Keyword.put(options, :headers, headers)
   end
 
   defp process_response(response) do

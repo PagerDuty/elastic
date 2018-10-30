@@ -46,12 +46,12 @@ defmodule Elastic.Index do
   # With index_prefix set to 'elastic'
   # And with `use_mix_env` set to `true`
   # This will create the `elastic_dev_answer` index
-  Elastic.Index.create("answer". %{settings: {number_of_shards: 2}})
+  Elastic.Index.create("answer", %{settings: {number_of_shards: 2}})
   ```
   """
 
   def create(index, parameters) do
-    HTTP.put(name(index), body: parameters)
+    HTTP.post(name(index), body: parameters)
   end
 
   @doc """
