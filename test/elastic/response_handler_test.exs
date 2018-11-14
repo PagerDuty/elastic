@@ -36,7 +36,7 @@ defmodule Elastic.ResponseHandlerTest do
 
   test "handles a retry_later" do
     response = ResponseHandler.process(%HTTPotion.ErrorResponse{message: "retry_later"})
-    assert {:error, 0, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}} == response
+    assert {:error, 429, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}} == response
   end
 
   test "handles any error" do

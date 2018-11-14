@@ -26,7 +26,7 @@ defmodule Elastic.ResponseHandler do
   end
 
   def process(%HTTPotion.ErrorResponse{message: "retry_later"}) do
-    {:error, 0, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}}
+    {:error, 429, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}}
   end
 
   def process(%HTTPotion.ErrorResponse{message: message}) do
