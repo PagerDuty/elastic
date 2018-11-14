@@ -25,6 +25,14 @@ defmodule Elastic.ResponseHandler do
     {:error, 0, %{"error" => "Could not connect to Elasticsearch: request timed out (req_timedout)"}}
   end
 
+  def process(%HTTPotion.ErrorResponse{message: "retry_later"}) do
+    {:error, 0, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}}
+  end
+
+  def process(%HTTPotion.ErrorResponse{message: message}) do
+    {:error, 0, %{"error" => "Could not connect to Elasticsearch: #{message}"}}
+  end
+
   defp decode_body("") do
     ""
   end

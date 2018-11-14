@@ -33,4 +33,14 @@ defmodule Elastic.ResponseHandlerTest do
     response = ResponseHandler.process(%HTTPotion.ErrorResponse{message: "req_timedout"})
     assert {:error, 0, %{"error" => "Could not connect to Elasticsearch: request timed out (req_timedout)"}} == response
   end
+
+  test "handles a retry_later" do
+    response = ResponseHandler.process(%HTTPotion.ErrorResponse{message: "retry_later"})
+    assert {:error, 0, %{"error" => "Could not connect to Elasticsearch: retry later (retry_later)"}} == response
+  end
+
+  test "handles any error" do
+    response = ResponseHandler.process(%HTTPotion.ErrorResponse{message: "some other error"})
+    assert {:error, 0, %{"error" => "Could not connect to Elasticsearch: some other error"}} == response
+  end
 end
