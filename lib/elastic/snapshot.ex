@@ -12,11 +12,20 @@ defmodule Elastic.Snapshot do
   @doc """
   Creates a snapshot in the indicated repository. If name is left out, the current date/time is used. The function does not wait for the snapshot operation to complete.
 
+  Returns {:ok, 200, %{"accepted" => true}} or {:error, status_code, map_of_details}
+  """
+  def create(repository, name \\ nil) do
+    name = if name != nil, do: name, else: synthetic_name()
+    HTTP.put("/_snapshot/#{repository}/#{name}")
+  end
+
+  @doc """
+  Creates a snapshot in the indicated repository. If name is left out, the current date/time is used. The function does not wait for the snapshot operation to complete.
+
   If the operation does not succeed, the function will raise an exception.
   """
   def create!(repository, name \\ nil) do
-    name = if name != nil, do: name, else: synthetic_name()
-    {:ok, 200, %{"accepted" => true}} = HTTP.put("/_snapshot/#{repository}/#{name}")
+    {:ok, 200, %{"accepted" => true}} = create(repository, name)
   end
 
   @doc """
