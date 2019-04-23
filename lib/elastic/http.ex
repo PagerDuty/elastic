@@ -84,6 +84,7 @@ defmodule Elastic.HTTP do
     headers = Keyword.get(options, :headers, [])
     body = Keyword.get(options, :body, "") <> "\n"
     url = URI.merge(base_url(), "_bulk")
+    headers = Keyword.put(headers, :"Content-Type", "application/json")
     headers = build_auth_header(:post, url, headers, body)
     options = options
     |> Keyword.put(:body, body)
