@@ -160,8 +160,8 @@ defmodule Elastic.Document.API do
         Document.index(es_index, @es_type, id, data)
       end
 
-      def update(id, data, es_index \\ @es_index) do
-        Document.update(es_index, @es_type, id, data)
+      def update(id, data, es_index \\ @es_index, options \\ []) do
+        Document.update(es_index, @es_type, id, data, options)
       end
 
       def get(id, es_index \\ @es_index) do

@@ -112,6 +112,14 @@ defmodule Elastic.Document.APITest do
   end
 
   @tag integration: true
+  test "puts + updates a document in explicit index with conflict handling" do
+    Question.index(1, %{text: "Hello world!"}, "some_index")
+    {:ok, 200, _} = Question.update(1, %{comments: 5}, "some_index", retry_on_conflict: 10)
+    answer = Question.get(1, "some_index")
+    assert answer == %Question{id: "1", text: "Hello world!", comments: 5}
+  end
+
+  @tag integration: true
   test "puts + deletes a document from explicit index" do
     Question.index(1, %{text: "Hello world!"}, "some_index")
     Question.delete(1, "some_index")
